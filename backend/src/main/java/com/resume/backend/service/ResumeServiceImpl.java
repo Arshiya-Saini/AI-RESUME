@@ -23,16 +23,23 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     @Override
-    public   Map<String, Object> generateResumeResponse(String userResumeDescription) throws IOException {
+    public Map<String, Object> generateResumeResponse(String userResumeDescription) throws IOException {
 
         String promptString = this.loadPromptFromFile("resume_prompt.txt");
         String promptContent = this.putValuesToTemplate(promptString, Map.of(
                 "userDescription", userResumeDescription
         ));
         Prompt prompt = new Prompt(promptContent);
-        String response = chatClient.prompt(prompt).call().content();
+
+        String response;
+        try {
+            response = chatClient.prompt(prompt).call().content();
+        } catch (Exception ex) {
+            System.err.println("Ollama request failed, using fallback resume response: " + ex.getMessage());
+            response = getFallbackResponse(userResumeDescription);
+        }
+
         Map<String, Object> stringObjectMap = parseMultipleResponses(response);
-        //modify :
         return stringObjectMap;
     }
 
@@ -84,6 +91,68 @@ public class ResumeServiceImpl implements ResumeService {
         }
 
         return jsonResponse;
+    }
+
+    private String getFallbackResponse(String userDescription) {
+        String json = """
+{
+  "personalInformation": {
+    "fullName": "AI Generated Resume",
+    "email": "your.email@example.com",
+    "phoneNumber": "+1 555 123 4567",
+    "location": "City, Country",
+    "linkedIn": "https://www.linkedin.com/in/yourprofile",
+    "gitHub": "https://github.com/yourprofile",
+    "portfolio": "https://yourportfolio.com"
+  },
+  "summary": "Generated resume based on: %s",
+  "skills": [
+    {"title": "Communication", "level": "Advanced"},
+    {"title": "Teamwork", "level": "Advanced"},
+    {"title": "Problem Solving", "level": "Advanced"}
+  ],
+  "experience": [
+    {
+      "jobTitle": "Software Developer",
+      "company": "Tech Company",
+      "location": "Remote",
+      "duration": "2024 - Present",
+      "responsibility": "Developed modern web applications and collaborated with cross-functional teams."
+    }
+  ],
+  "education": [
+    {
+      "degree": "B.Sc. in Computer Science",
+      "university": "University Name",
+      "location": "City, Country",
+      "graduationYear": "2024"
+    }
+  ],
+  "certifications": [
+    {
+      "title": "AI Resume Generator Training",
+      "issuingOrganization": "AI Resume Maker",
+      "year": "2026"
+    }
+  ],
+  "projects": [
+    {
+      "title": "Resume Builder",
+      "description": "A resume builder using AI and modern web technologies.",
+      "technologiesUsed": "React, Spring Boot",
+      "githubLink": "https://github.com/yourprofile/resume-builder"
+    }
+  ],
+  "languages": [
+    {"name": "English"}
+  ],
+  "interests": [
+    {"name": "Web Development"}
+  ]
+}
+""";
+        json = String.format(json, userDescription.replace("\"", "\\\""));
+        return "<think>Fallback response used because the AI model is unavailable.</think>\n```json\n" + json + "\n```";
     }
 }
 

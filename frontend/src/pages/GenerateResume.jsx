@@ -54,29 +54,118 @@ const GenerateResume = () => {
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const getFallbackResume = (input) => ({
+    personalInformation: {
+      fullName: "AI Generated Resume",
+      email: "example@example.com",
+      phoneNumber: "+1 555 555 5555",
+      location: "City, Country",
+      linkedIn: "https://linkedin.com/in/username",
+      gitHub: "https://github.com/username",
+      portfolio: "https://portfolio.example.com",
+    },
+    summary: input
+      ? `Generated resume based on: ${input}`
+      : "Resume generated from your profile description.",
+    skills: [
+      { title: "Problem Solving", level: "Advanced" },
+      { title: "JavaScript", level: "Advanced" },
+      { title: "React", level: "Advanced" },
+      { title: "Java", level: "Intermediate" },
+    ],
+    experience: [
+      {
+        jobTitle: "Software Engineering Intern",
+        company: "Tech Startup",
+        location: "Remote",
+        duration: "Jun 2024 - Aug 2024",
+        responsibility:
+          "Developed user-facing features using React and collaborated with the backend team.",
+      },
+    ],
+    education: [
+      {
+        degree: "B.Tech in Computer Science",
+        university: "Reputed University",
+        location: "City, Country",
+        graduationYear: "2025",
+      },
+    ],
+    certifications: [
+      {
+        title: "Full Stack Web Development",
+        issuingOrganization: "Online Academy",
+        year: "2024",
+      },
+    ],
+    projects: [
+      {
+        title: "AI Resume Builder",
+        description:
+          "Built an AI-powered resume builder with React frontend and Spring Boot backend.",
+        technologiesUsed: "React, Spring Boot, TailwindCSS",
+        githubLink: "https://github.com/username/ai-resume-maker",
+      },
+    ],
+    languages: [{ name: "English" }],
+    interests: [{ name: "Web Development" }],
+  });
+
   const handleGenerate = async () => {
-    console.log(description);
-    // server call to get resume
+    if (!description.trim()) {
+      toast.error("Please enter a resume description before generating.");
+      return;
+    }
 
     try {
       setLoading(true);
       const responseData = await generateResume(description);
-      console.log(responseData);
+      console.log("Resume API response:", responseData);
+
+      if (!responseData || !responseData.data) {
+        throw new Error("Invalid response from server.");
+      }
+
+      setData(responseData.data);
       reset(responseData.data);
 
       toast.success("Resume Generated Successfully!", {
         duration: 3000,
         position: "top-center",
       });
-      setShowFormUI(true);
+      setShowFormUI(false);
       setShowPromptInput(false);
-      setShowResumeUI(false);
+      setShowResumeUI(true);
+      setDescription("");
     } catch (error) {
-      console.log(error);
-      toast.error("Error Generating Resume!");
+      console.error("Generate error:", error);
+
+      const timedOut =
+        error?.code === "ECONNABORTED" ||
+        error?.message?.toLowerCase().includes("timeout");
+
+      if (timedOut) {
+        const fallbackData = getFallbackResume(description);
+        setData(fallbackData);
+        reset(fallbackData);
+        toast.success(
+          "Backend timeout occurred. Showing a generated demo resume instead.",
+          {
+            duration: 4000,
+            position: "top-center",
+          }
+        );
+        setShowFormUI(false);
+        setShowPromptInput(false);
+        setShowResumeUI(true);
+      } else {
+        const errorMessage =
+          error?.response?.data?.message || error?.message ||
+          "Unable to generate resume.";
+        toast.error(errorMessage);
+      }
     } finally {
       setLoading(false);
-      setDescription("");
     }
   };
 
@@ -136,13 +225,13 @@ const GenerateResume = () => {
   function showFormFunction() {
     return (
       <div className="w-full p-10">
-        <h1 className="text-4xl font-bold mb-6 flex items-center justify-center gap-2">
-          <BiBook className="text-accent" /> Resume Form
+        <h1 className="text-4xl font-bold mb-6 flex items-center justify-center gap-2 text-gray-800">
+          <BiBook className="text-blue-600" /> Resume Form
         </h1>
         <div>
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="p-6 space-y-6 bg-base-200 rounded-lg text-base-content"
+            className="p-6 space-y-6 bg-gradient-to-br from-blue-50 to-indigo-100 rounded-xl text-gray-800 border border-blue-200"
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {renderInput("personalInformation.fullName", "Full Name")}
@@ -219,17 +308,17 @@ const GenerateResume = () => {
 
   function ShowInputField() {
     return (
-      <div className="bg-base-200 shadow-lg rounded-lg p-10 max-w-2xl w-full text-center">
-        <h1 className="text-4xl font-bold mb-6 flex items-center justify-center gap-2">
-          <FaBrain className="text-accent" /> AI Resume Description Input
+      <div className="bg-gradient-to-br from-blue-50 to-indigo-100 shadow-xl rounded-2xl p-10 max-w-2xl w-full text-center border border-blue-200">
+        <h1 className="text-4xl font-bold mb-6 flex items-center justify-center gap-2 text-gray-800">
+          <FaBrain className="text-blue-600" /> AI Resume Description Input
         </h1>
-        <p className="mb-4 text-lg text-gray-600">
+        <p className="mb-4 text-lg text-gray-700">
           Enter a detailed description about yourself to generate your
           professional resume.
         </p>
         <textarea
           disabled={loading}
-          className="textarea textarea-bordered w-full h-48 mb-6 resize-none"
+          className="textarea textarea-bordered w-full h-48 mb-6 resize-none bg-white text-gray-800 border-2 border-blue-300 focus:border-blue-500"
           placeholder="Type your description here..."
           value={description}
           onChange={(e) => setDescription(e.target.value)}
@@ -238,7 +327,7 @@ const GenerateResume = () => {
           <button
             disabled={loading}
             onClick={handleGenerate}
-            className="btn btn-primary flex items-center gap-2"
+            className="btn bg-gradient-to-r from-blue-500 to-indigo-600 text-white border-none hover:from-blue-600 hover:to-indigo-700 flex items-center gap-2 transition-all"
           >
             {loading && <span className="loading loading-spinner"></span>}
             <FaPaperPlane />
@@ -246,7 +335,7 @@ const GenerateResume = () => {
           </button>
           <button
             onClick={handleClear}
-            className="btn btn-secondary flex items-center gap-2"
+            className="btn bg-gray-400 hover:bg-gray-500 text-white border-none flex items-center gap-2 transition-all"
           >
             <FaTrash /> Clear
           </button>
@@ -266,7 +355,7 @@ const GenerateResume = () => {
               setShowFormUI(false);
               setShowResumeUI(false);
             }}
-            className="btn btn-accent"
+            className="btn bg-gradient-to-r from-purple-500 to-pink-600 text-white border-none hover:from-purple-600 hover:to-pink-700 transition-all"
           >
             Generate Another
           </div>
@@ -276,7 +365,7 @@ const GenerateResume = () => {
               setShowFormUI(true);
               setShowResumeUI(false);
             }}
-            className="btn btn-success"
+            className="btn bg-gradient-to-r from-green-500 to-emerald-600 text-white border-none hover:from-green-600 hover:to-emerald-700 transition-all"
           >
             Edit
           </div>
@@ -290,6 +379,11 @@ const GenerateResume = () => {
       {showFormUI && showFormFunction()}
       {showPromptInput && ShowInputField()}
       {showResumeUI && showResume()}
+      {!showFormUI && !showPromptInput && !showResumeUI && (
+        <div className="text-center py-8 text-gray-500">
+          <p>No content to display. Click "Get Started" to begin.</p>
+        </div>
+      )}
     </div>
   );
 };
