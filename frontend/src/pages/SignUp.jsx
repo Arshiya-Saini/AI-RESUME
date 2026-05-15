@@ -1,28 +1,29 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import toast from "react-hot-toast";
-import { FaEnvelope, FaLock, FaSignInAlt } from "react-icons/fa";
+import { FaUser, FaEnvelope, FaLock, FaRocket } from "react-icons/fa";
 
-const Login = () => {
+const SignUp = () => {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleSignUp = (e) => {
     e.preventDefault();
-    if (!email || !password) {
+    if (!name || !email || !password) {
       toast.error("Please fill in all fields");
       return;
     }
 
     setLoading(true);
     setTimeout(() => {
-      localStorage.setItem("user", JSON.stringify({ email, id: Date.now() }));
-      toast.success("Login successful!");
+      localStorage.setItem("user", JSON.stringify({ name, email, id: Date.now() }));
+      toast.success("Account created successfully!");
       navigate("/");
       setLoading(false);
-    }, 1000);
+    }, 1200);
   };
 
   return (
@@ -36,15 +37,35 @@ const Login = () => {
 
           <div className="text-center mb-10 relative z-10">
             <div className="inline-flex p-3 bg-blue-600/10 rounded-2xl mb-4 text-blue-400">
-              <FaSignInAlt className="w-8 h-8" />
+              <FaRocket className="w-8 h-8 animate-pulse" />
             </div>
             <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent mb-2">
-              Welcome Back
+              Join the Future
             </h1>
-            <p className="text-slate-400">Log in to continue your journey</p>
+            <p className="text-slate-400">Create your AI-powered career profile</p>
           </div>
 
-          <form onSubmit={handleLogin} className="space-y-6 relative z-10">
+          <form onSubmit={handleSignUp} className="space-y-6 relative z-10">
+            {/* Name Field */}
+            <div>
+              <label className="block text-sm font-medium text-slate-300 mb-2 ml-1">
+                Full Name
+              </label>
+              <div className="relative group">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 group-focus-within:text-blue-400 transition-colors">
+                  <FaUser className="w-4 h-4" />
+                </div>
+                <input
+                  type="text"
+                  required
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full pl-11 pr-4 py-3.5 bg-slate-800/50 border border-slate-700 hover:border-blue-500/50 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none rounded-xl text-white transition-all placeholder:text-slate-600"
+                  placeholder="John Doe"
+                />
+              </div>
+            </div>
+
             {/* Email Field */}
             <div>
               <label className="block text-sm font-medium text-slate-300 mb-2 ml-1">
@@ -60,19 +81,16 @@ const Login = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full pl-11 pr-4 py-3.5 bg-slate-800/50 border border-slate-700 hover:border-blue-500/50 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none rounded-xl text-white transition-all placeholder:text-slate-600"
-                  placeholder="you@example.com"
+                  placeholder="name@company.com"
                 />
               </div>
             </div>
 
             {/* Password Field */}
             <div>
-              <div className="flex justify-between items-center mb-2 ml-1">
-                <label className="text-sm font-medium text-slate-300">
-                  Password
-                </label>
-                <a href="#" className="text-xs text-blue-400 hover:text-blue-300 transition-colors">Forgot Password?</a>
-              </div>
+              <label className="block text-sm font-medium text-slate-300 mb-2 ml-1">
+                Password
+              </label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 group-focus-within:text-blue-400 transition-colors">
                   <FaLock className="w-4 h-4" />
@@ -102,16 +120,16 @@ const Login = () => {
                   Processing...
                 </span>
               ) : (
-                "Sign In"
+                "Create Account"
               )}
             </button>
           </form>
 
           <div className="mt-8 text-center relative z-10">
             <p className="text-slate-400 text-sm">
-              New here?{" "}
-              <Link to="/signup" className="text-blue-400 hover:text-blue-300 font-bold transition-colors underline-offset-4 hover:underline">
-                Create an account
+              Already have an account?{" "}
+              <Link to="/login" className="text-blue-400 hover:text-blue-300 font-bold transition-colors underline-offset-4 hover:underline">
+                Sign in
               </Link>
             </p>
           </div>
@@ -127,4 +145,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default SignUp;

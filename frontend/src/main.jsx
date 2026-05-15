@@ -8,6 +8,8 @@ import Root from "./pages/Root";
 import Services from "./pages/Services";
 import Contact from "./pages/Contact";
 import GenerateResume from "./pages/GenerateResume";
+import Login from "./pages/Login";
+import SignUp from "./pages/SignUp";
 import { Toaster } from "react-hot-toast";
 
 createRoot(document.getElementById("root")).render(
@@ -21,6 +23,8 @@ createRoot(document.getElementById("root")).render(
           <Route path="services" element={<Services />} />
           <Route path="contact" element={<Contact />} />
           <Route path="generate-resume" element={<GenerateResume />} />
+          <Route path="login" element={<Login />} />
+          <Route path="signup" element={<SignUp />} />
         </Route>
       </Routes>
     </BrowserRouter>

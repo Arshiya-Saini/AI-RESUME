@@ -1,142 +1,150 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router";
 
 const LandingPage = () => {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
   return (
-    <div className="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 min-h-screen">
+    <div className="bg-[#030712] min-h-screen text-slate-200 selection:bg-blue-500/30">
       {/* Hero Section */}
-      <section className="hero min-h-screen bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 text-white relative overflow-hidden">
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
-          <div className="absolute top-40 right-10 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
-          <div className="absolute -bottom-8 left-20 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-4000"></div>
+      <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
+        {/* Background Gradients */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full -z-10 pointer-events-none">
+          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-600/20 blur-[120px] rounded-full"></div>
+          <div className="absolute bottom-[10%] right-[-10%] w-[40%] h-[40%] bg-indigo-600/20 blur-[120px] rounded-full"></div>
         </div>
-        <div className="hero-content text-center relative z-10">
-          <div className="max-w-2xl">
-            <h1 className="text-5xl font-bold mb-4">
-              Create Your Perfect Resume with AI
-            </h1>
-            <p className="py-6 text-lg opacity-90">
-              Build a professional resume in minutes. Just describe yourself,
-              and our AI will do the rest!
-            </p>
-            <Link to={"/generate-resume"} className="btn btn-lg bg-white text-indigo-700 border-none hover:bg-gray-100 font-bold transition-all shadow-lg">
-              Get Started Now
-            </Link>
+
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="flex flex-col items-center justify-center text-center space-y-10 max-w-4xl mx-auto">
+            <div className="space-y-8">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium animate-fade-in mx-auto">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+                </span>
+                Powered by Advanced AI
+              </div>
+              <h1 className="text-5xl lg:text-8xl font-bold tracking-tight leading-tight">
+                Craft Your <span className="bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent">Future</span> <br /> with Precision AI
+              </h1>
+              <p className="text-lg lg:text-2xl text-slate-400 leading-relaxed max-w-2xl mx-auto">
+                Transform your career journey with professional, ATS-optimized resumes generated in seconds. Describe your experience, and let our intelligence do the heavy lifting.
+              </p>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+                {user ? (
+                  <Link to={"/generate-resume"} className="group relative px-10 py-5 bg-blue-600 hover:bg-blue-500 text-white text-lg font-bold rounded-2xl transition-all duration-300 shadow-[0_0_20px_rgba(37,99,235,0.3)] hover:shadow-[0_0_30px_rgba(37,99,235,0.5)] overflow-hidden">
+                    <span className="relative z-10 flex items-center gap-2">
+                      Get Started Now <span className="group-hover:translate-x-1 transition-transform">→</span>
+                    </span>
+                  </Link>
+                ) : (
+                  <Link to={"/signup"} className="group relative px-10 py-5 bg-white text-slate-900 text-lg font-bold rounded-2xl transition-all duration-300 hover:scale-105 overflow-hidden shadow-xl">
+                    Join for Free
+                  </Link>
+                )}
+                <a href="#features" className="px-10 py-5 text-slate-400 hover:text-white transition-colors font-semibold text-lg border border-slate-800 rounded-2xl hover:bg-slate-800/50">
+                  See how it works
+                </a>
+              </div>
+            </div>
           </div>
         </div>
+
       </section>
+
+      {/* Divider Line */}
+      <div className="container mx-auto px-6">
+        <div className="h-px w-full bg-gradient-to-r from-transparent via-blue-500/20 to-transparent"></div>
+      </div>
+
       {/* Features Section */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-bold text-center mb-12 text-gray-800">Why Choose Us?</h2>
+      <section id="features" className="py-32 relative bg-[#05091a] border-t border-slate-800/50">
+        <div className="container mx-auto px-6">
+          <div className="text-center max-w-3xl mx-auto mb-20 space-y-4">
+            <h2 className="text-4xl lg:text-6xl font-bold">Why AI Resume Maker?</h2>
+            <p className="text-slate-400 lg:text-xl">Industry-standard precision coupled with the latest in generative intelligence.</p>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Feature 1 */}
-            <div className="card bg-gradient-to-br from-blue-50 to-indigo-100 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 border border-blue-200">
-              <div className="card-body items-center text-center">
-                <div className="text-5xl mb-4">🚀</div>
-                <h3 className="card-title text-gray-800">AI-Powered</h3>
-                <p className="text-gray-700">
-                  Our AI analyzes your input and generates a tailored resume for
-                  you.
-                </p>
-              </div>
+            <div className="group p-8 rounded-3xl bg-slate-900/40 border border-slate-800 hover:border-blue-500/30 transition-all duration-300 hover:-translate-y-2">
+              <div className="w-14 h-14 bg-blue-500/10 rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-transform">🚀</div>
+              <h3 className="text-xl font-bold mb-4">AI-Driven Optimization</h3>
+              <p className="text-slate-400 leading-relaxed text-sm">
+                Our neural engines analyze industry trends and keywords to ensure your resume stands out to both humans and ATS.
+              </p>
             </div>
             {/* Feature 2 */}
-            <div className="card bg-gradient-to-br from-green-50 to-emerald-100 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 border border-green-200">
-              <div className="card-body items-center text-center">
-                <div className="text-5xl mb-4">📄</div>
-                <h3 className="card-title text-gray-800">Professional Templates</h3>
-                <p className="text-gray-700">
-                  Choose from a variety of professionally designed resume
-                  templates.
-                </p>
-              </div>
+            <div className="group p-8 rounded-3xl bg-slate-900/40 border border-slate-800 hover:border-emerald-500/30 transition-all duration-300 hover:-translate-y-2">
+              <div className="w-14 h-14 bg-emerald-500/10 rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-transform">📄</div>
+              <h3 className="text-xl font-bold mb-4">Elite Templates</h3>
+              <p className="text-slate-400 leading-relaxed text-sm">
+                Meticulously designed templates used by successful hires at Fortune 500 companies like Google, Meta, and Netflix.
+              </p>
             </div>
             {/* Feature 3 */}
-            <div className="card bg-gradient-to-br from-purple-50 to-pink-100 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 border border-purple-200">
-              <div className="card-body items-center text-center">
-                <div className="text-5xl mb-4">💼</div>
-                <h3 className="card-title text-gray-800">Job-Ready</h3>
-                <p className="text-gray-700">
-                  Optimize your resume for specific job roles and industries.
-                </p>
-              </div>
+            <div className="group p-8 rounded-3xl bg-slate-900/40 border border-slate-800 hover:border-purple-500/30 transition-all duration-300 hover:-translate-y-2">
+              <div className="w-14 h-14 bg-purple-500/10 rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-transform">💼</div>
+              <h3 className="text-xl font-bold mb-4">Career Acceleration</h3>
+              <p className="text-slate-400 leading-relaxed text-sm">
+                Get job-ready in minutes instead of days. Speed up your application process and land interviews faster.
+              </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Testimonials Section */}
-      <section className="py-20 bg-gradient-to-r from-slate-100 to-blue-100">
-        <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-bold text-center mb-12 text-gray-800">
-            What Our Users Say
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Testimonial 1 */}
-            <div className="card bg-white shadow-lg border border-blue-200">
-              <div className="card-body">
-                <p className="text-gray-700 italic">
-                  "This AI resume maker saved me so much time! My resume looks
-                  professional and got me multiple interviews."
-                </p>
-                <div className="flex items-center mt-4">
-                  <div className="avatar">
-                    <div className="w-12 rounded-full">
-                      <img
-                        src="https://randomuser.me/api/portraits/men/1.jpg"
-                        alt="User"
-                      />
-                    </div>
-                  </div>
-                  <div className="ml-4">
-                    <h4 className="font-bold text-gray-800">John Doe</h4>
-                    <p className="text-gray-600">Software Engineer</p>
-                  </div>
-                </div>
-              </div>
+      {/* Stats Section */}
+      <section className="py-20 border-y border-slate-800 bg-slate-900/20">
+        <div className="container mx-auto px-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+            <div>
+              <div className="text-3xl lg:text-4xl font-bold text-white mb-2">50k+</div>
+              <div className="text-slate-500 text-sm font-medium uppercase tracking-widest">Resumes Created</div>
             </div>
-            {/* Testimonial 2 */}
-            <div className="card bg-white shadow-lg border border-green-200">
-              <div className="card-body">
-                <p className="text-gray-700 italic">
-                  "I love the templates and the ease of use. Highly recommend
-                  this tool to anyone looking for a job."
-                </p>
-                <div className="flex items-center mt-4">
-                  <div className="avatar">
-                    <div className="w-12 rounded-full">
-                      <img
-                        src="https://randomuser.me/api/portraits/women/2.jpg"
-                        alt="User"
-                      />
-                    </div>
-                  </div>
-                  <div className="ml-4">
-                    <h4 className="font-bold">Jane Smith</h4>
-                    <p>Marketing Specialist</p>
-                  </div>
-                </div>
-              </div>
+            <div>
+              <div className="text-3xl lg:text-4xl font-bold text-white mb-2">94%</div>
+              <div className="text-slate-500 text-sm font-medium uppercase tracking-widest">Success Rate</div>
+            </div>
+            <div>
+              <div className="text-3xl lg:text-4xl font-bold text-white mb-2">200+</div>
+              <div className="text-slate-500 text-sm font-medium uppercase tracking-widest">ATS Templates</div>
+            </div>
+            <div>
+              <div className="text-3xl lg:text-4xl font-bold text-white mb-2">24/7</div>
+              <div className="text-slate-500 text-sm font-medium uppercase tracking-widest">AI Support</div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Call to Action Section */}
-      <section className="py-20 bg-base-100">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-4xl font-bold mb-6">
-            Ready to Create Your Resume?
+      <section className="py-32 relative overflow-hidden">
+        <div className="absolute inset-0 bg-blue-600/10 -z-10"></div>
+        <div className="container mx-auto px-6 text-center space-y-8">
+          <h2 className="text-4xl lg:text-6xl font-bold tracking-tight">
+            The Next Step in Your Career <br /> <span className="text-blue-400">Starts Here</span>
           </h2>
-          <p className="mb-8 text-lg">
-            Join thousands of users who have landed their dream jobs with our AI
-            resume maker.
+          <p className="max-w-2xl mx-auto text-slate-400 lg:text-lg">
+            Join thousands of professionals who have elevated their careers using our AI-powered tool.
           </p>
-          <Link to={"/generate-resume"} className="btn btn-primary">
-            Get Started Now
-          </Link>
+          <div className="pt-4">
+            {user ? (
+              <Link to={"/generate-resume"} className="px-10 py-5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-2xl transition-all duration-300 shadow-xl shadow-blue-900/30">
+                Start Building for Free
+              </Link>
+            ) : (
+              <Link to={"/signup"} className="px-10 py-5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-2xl transition-all duration-300 shadow-xl shadow-blue-900/30">
+                Create Your Account
+              </Link>
+            )}
+          </div>
         </div>
       </section>
     </div>

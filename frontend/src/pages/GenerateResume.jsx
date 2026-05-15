@@ -6,8 +6,18 @@ import { BiBook } from "react-icons/bi";
 import { useForm, useFieldArray } from "react-hook-form";
 import { FaPlusCircle } from "react-icons/fa";
 import Resume from "../components/Resume";
+import { useNavigate } from "react-router";
 
 const GenerateResume = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    if (!user) {
+      toast.error("Please login or sign up to access the AI Resume Maker.");
+      navigate("/login");
+    }
+  }, [navigate]);
   const [data, setData] = useState({
     personalInformation: {
       fullName: "Durgesh Kumar Tiwari",
@@ -174,14 +184,14 @@ const GenerateResume = () => {
   };
 
   const renderInput = (name, label, type = "text") => (
-    <div className="form-control w-full  mb-4">
+    <div className="form-control w-full mb-4">
       <label className="label">
-        <span className="label-text text-base-content">{label}</span>
+        <span className="label-text text-slate-300 font-medium">{label}</span>
       </label>
       <input
         type={type}
         {...register(name)}
-        className="input input-bordered rounded-xl w-full bg-base-100 text-base-content"
+        className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700 hover:border-blue-500/50 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none rounded-xl text-white transition-all"
       />
     </div>
   );
@@ -231,7 +241,7 @@ const GenerateResume = () => {
         <div>
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="p-6 space-y-6 bg-gradient-to-br from-blue-50 to-indigo-100 rounded-xl text-gray-800 border border-blue-200"
+            className="p-8 space-y-8 bg-slate-900/50 backdrop-blur-xl rounded-3xl text-slate-200 border border-blue-500/20 shadow-2xl"
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {renderInput("personalInformation.fullName", "Full Name")}
@@ -308,18 +318,18 @@ const GenerateResume = () => {
 
   function ShowInputField() {
     return (
-      <div className="bg-gradient-to-br from-blue-50 to-indigo-100 shadow-xl rounded-2xl p-10 max-w-2xl w-full text-center border border-blue-200">
-        <h1 className="text-4xl font-bold mb-6 flex items-center justify-center gap-2 text-gray-800">
-          <FaBrain className="text-blue-600" /> AI Resume Description Input
+      <div className="bg-slate-900/50 backdrop-blur-xl shadow-2xl rounded-3xl p-10 max-w-2xl w-full text-center border border-blue-500/20 relative overflow-hidden">
+        <div className="absolute -top-24 -right-24 w-48 h-48 bg-blue-600/10 blur-3xl rounded-full"></div>
+        <h1 className="text-4xl font-bold mb-6 flex items-center justify-center gap-2 text-white relative z-10">
+          <FaBrain className="text-blue-400" /> AI Resume Intelligence
         </h1>
-        <p className="mb-4 text-lg text-gray-700">
-          Enter a detailed description about yourself to generate your
-          professional resume.
+        <p className="mb-8 text-lg text-slate-400 relative z-10">
+          Describe your career history, skills, and goals. Our AI will craft a high-performance resume tailored for you.
         </p>
         <textarea
           disabled={loading}
-          className="textarea textarea-bordered w-full h-48 mb-6 resize-none bg-white text-gray-800 border-2 border-blue-300 focus:border-blue-500"
-          placeholder="Type your description here..."
+          className="w-full h-56 p-6 mb-8 bg-slate-800/50 border border-slate-700 hover:border-blue-500/50 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none rounded-2xl text-white transition-all placeholder:text-slate-600 resize-none relative z-10"
+          placeholder="e.g., I am a Senior Software Engineer with 8 years of experience in React, Node.js, and Cloud Architecture. I have led teams of 10+ and delivered..."
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         ></textarea>
